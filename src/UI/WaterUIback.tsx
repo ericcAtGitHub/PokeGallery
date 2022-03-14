@@ -11,12 +11,12 @@ import { GalleryContext } from "../Context/GalleryContext"
 type TProps = {
     appIsTargetNow: boolean
     pokeSpecApiRes: ModelDef.TNamedAPIResource
-    appSetDisplayHandler: any
+    appDisplayPokeDetailHandler: any
 }
 
 const pokeHelper = PokeHelper()
 
-const WaterUIback: FC<TProps> = ({ pokeSpecApiRes, appIsTargetNow, appSetDisplayHandler }) => {
+const WaterUIback: FC<TProps> = ({ pokeSpecApiRes, appIsTargetNow, appDisplayPokeDetailHandler }) => {
 
     let rtn = null //always return null since this component renders nothing but do the useSWR job only
 
@@ -28,7 +28,7 @@ const WaterUIback: FC<TProps> = ({ pokeSpecApiRes, appIsTargetNow, appSetDisplay
     */
 
     const {
-        appIsShowHandler,
+        appIsShowSpecialHandler,
     } = useContext(GalleryContext)
 
     const { data: dataPokeSpec, error: errorPokeSpec }: { data?: any, error?: any } = useSWR(pokeSpecApiRes.url)
@@ -47,7 +47,7 @@ const WaterUIback: FC<TProps> = ({ pokeSpecApiRes, appIsTargetNow, appSetDisplay
     const abc = () => {
         //console.log(123)
         if (appIsTargetNow) {
-            appSetDisplayHandler(pokeSpec)
+            appDisplayPokeDetailHandler(pokeSpec)
         }
     }
 

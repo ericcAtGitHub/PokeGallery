@@ -1,8 +1,10 @@
 import { NavLink as ReactLink, Route, withRouter } from 'react-router-dom'
-import { RouteComponentProps } from 'react-router';
-import { ChangeEvent, FC, ReactElement, useEffect, useRef, useState, createContext, Children } from 'react';
+import { RouteComponentProps } from 'react-router'
+import { ChangeEvent, FC, ReactElement, useEffect, useRef, useState, createContext, Children } from 'react'
+
 import * as ModelDef from '../Model/Model'
 import Helper, { PokeHelper } from '../Model/Helper'
+import useSearchKey from '../Hook/useSearchKey'
 
 export interface IMyRouteMatchParams {
     routeId: string
@@ -14,14 +16,14 @@ export interface IGalleryContextHOC extends RouteComponentProps<IMyRouteMatchPar
 }
 
 interface IGalleryContext {
-    appProceededData: ModelDef.TNamedAPIResource[],
-    appIsShowHandler: any,
+    appDisplayGalleryItems: ModelDef.TNamedAPIResource[],
+    appIsShowSpecialHandler: any,
     appRouteCtx?: RouteComponentProps<IMyRouteMatchParams>
 }
 
 export const GalleryContext = createContext<IGalleryContext>({
-    appProceededData: [],
-    appIsShowHandler: null
+    appDisplayGalleryItems: [],
+    appIsShowSpecialHandler: null
 })
 
 const shuffleArray = function (array: any[]) {
@@ -37,49 +39,47 @@ const scrollBtnCssClassShow = "scroll-top scroll-top-show"
 
 const GalleryContextHOC: FC<IGalleryContextHOC> = ({ children, ...routeParams }): ReactElement => {
     
-    const globalConfig = Helper.GetGlobalConfig()
+    const globalConfig = Helper.GetGlobalConfig() // get the content of the file "public/GlobalConfig.cs"
     const pokeHelper = PokeHelper()
     //console.log(routeParams.match.params.routeId)
 
-    const getTargetData = (checkHandler: (g: ModelDef.TConfigGallaryData) => boolean): ModelDef.TConfigGallaryData => {
-        let rtn = globalConfig.Gallary.Data[0]
-
-        const appGallary = globalConfig.Gallary.Data.filter(g => checkHandler(g))
-        if (appGallary.length > 0) {
-            rtn = appGallary[0]
-        }
-        return rtn
+    const getGlobalConfigGenDataObj
+        = (criteriaChecker: (g: ModelDef.TConfigGenData) => boolean): ModelDef.TConfigGenData => {
+        return globalConfig.Gallery.GenData.find(g => criteriaChecker(g)) || globalConfig.Gallery.GenData[0]
     }
 
-    const targetData = getTargetData(g => g.routeId === routeParams.match.params.routeId)
-    const sortedAppGen = pokeHelper.GetSortedGen(targetData.obj)
+    const targetGlobalConfigGenDataObj: ModelDef.TConfigGenData
+        = getGlobalConfigGenDataObj(g => g.routeId === routeParams.match.params.routeId)
+    const sortedTargetGen: ModelDef.TGeneration = pokeHelper.GetSortedGen(targetGlobalConfigGenDataObj.obj)
 
-    //const [stateAppData, setStateAppData] = useState<ModelDef.TNamedAPIResource[]>(sortedAppGen.pokemon_species);
-    const [stateAppData, setStateAppData] = useState<ModelDef.TNamedAPIResource[]>([]);
+    const [stateSortedGalleryItems, setStateSortedGalleryItems] = useState<ModelDef.TNamedAPIResource[]>([]);
 
-    const [stateSearchKey, setStateSearchKey] = useState<string>('');
+    const [appSearchKey, appSetSearchKey] = useSearchKey()
     const [stateIsShowSpecialOnly, setStateIsShowSpecialOnly] = useState<boolean>(false)
-    const scrollToThisEleRef = useRef(null)
+    const scrollToThisEleRef = useRef(null) // for the scroll-to-top btn
 
     const shuffleHandler = () => {
-        let newData = shuffleArray([...stateAppData]);
-        setStateAppData(newData);
+        let newData = shuffleArray([...stateSortedGalleryItems])
+        setStateSortedGalleryItems(newData)
     }
 
     useEffect(() => { // re-load at appropriate time
-        setStateAppData(sortedAppGen.pokemon_species)
-    }, [routeParams.match.params, sortedAppGen.pokemon_species])
+        setStateSortedGalleryItems(sortedTargetGen.pokemon_species)
+    }, [routeParams.match.params, sortedTargetGen.pokemon_species])
 
     const [stateScrollBtnCssClass, setStateScrollBtnCssClass] = useState<string>(scrollBtnCssClassHide)
-    const scrollHandler = () => setStateScrollBtnCssClass(scrollBtnCssClassShow)
+
+    // the scroll-to-top btn is hidden originally; it appears after first scroll
+    const firstScrollHandler = () => setStateScrollBtnCssClass(scrollBtnCssClassShow)
+
     useEffect(() => {
-        document.addEventListener('scroll', scrollHandler, { once: true })
+        document.addEventListener('scroll', firstScrollHandler, { once: true })
         return () => {
-            document.removeEventListener('scroll', scrollHandler)
+            document.removeEventListener('scroll', firstScrollHandler)
         };
     })
 
-    const isShowHandler = (pokeSpec: ModelDef.TPokemonSpecies) => {
+    const isShowSpecialHandler = (pokeSpec: ModelDef.TPokemonSpecies) => {
         let rtn = true
         if (stateIsShowSpecialOnly && !pokeSpec.is_legendary && !pokeSpec.is_mythical) {
             rtn = false
@@ -87,28 +87,30 @@ const GalleryContextHOC: FC<IGalleryContextHOC> = ({ children, ...routeParams })
         return rtn
     }
 
-    const search = () => {
-        let filteredData = [] as ModelDef.TNamedAPIResource[];
-        stateAppData.forEach((apiRes: ModelDef.TNamedAPIResource) => {
-            if (apiRes.name.toLowerCase().includes(stateSearchKey.toLocaleLowerCase())) {
-                filteredData = [...filteredData, apiRes];
+    // filter the display items by search key
+    const getDisplayGalleryItems = (): ModelDef.TNamedAPIResource[] => {
+        let rtn = [] as ModelDef.TNamedAPIResource[]
+        stateSortedGalleryItems.forEach((apiRes: ModelDef.TNamedAPIResource) => {
+            if (apiRes.name.toLowerCase().includes(appSearchKey.toLocaleLowerCase())) {
+                rtn = [...rtn, apiRes];
             }
         });
 
-        return filteredData
+        return rtn
     }
 
-    const filteredStateAppData = search();
+    const toBeDisplayedGalleryItems = getDisplayGalleryItems();
 
-    const selectGallaryHandler = (e: ChangeEvent<HTMLSelectElement>) => {
-        const toBeDisplayedData = getTargetData(g => g.desc === e.target.value);
+    // handle the <select> of "Pokemon Generation" by url redirection
+    const selectTargetGenDataObjHandler = (e: ChangeEvent<HTMLSelectElement>) => {
+        const targetGenDataObj = getGlobalConfigGenDataObj(g => g.desc === e.target.value)
         //console.log(routeParams)
-        routeParams.history.push(routeParams.match.path.replace(":routeId?", toBeDisplayedData.routeId))
+        routeParams.history.push(routeParams.match.path.replace(":routeId?", targetGenDataObj.routeId))
     }
 
     const contextValues: IGalleryContext = {
-        appProceededData: filteredStateAppData,
-        appIsShowHandler: isShowHandler,
+        appDisplayGalleryItems: toBeDisplayedGalleryItems,
+        appIsShowSpecialHandler: isShowSpecialHandler,
         appRouteCtx: routeParams
 	}
 
@@ -118,28 +120,31 @@ const GalleryContextHOC: FC<IGalleryContextHOC> = ({ children, ...routeParams })
 
             <div ref={scrollToThisEleRef}>&nbsp;</div>
 
-            <span className="nav-menu">
-                <ReactLink activeClassName={"currently-viewing"} to={`/${targetData.routeId}`} exact={true}>List view</ReactLink>{' '}|{' '}
-                <ReactLink activeClassName={"currently-viewing"} to={`/waterfall/${targetData.routeId}`}>Waterfall gallery</ReactLink>
-            </span>
+            
 
             <div>
-                <select onChange={selectGallaryHandler} defaultValue={targetData.desc}>
-                    {globalConfig.Gallary.Data.map(d =>
+                <div>
+                <select onChange={selectTargetGenDataObjHandler} defaultValue={targetGlobalConfigGenDataObj.desc}>
+                    {globalConfig.Gallery.GenData.map(d =>
                         <option key={d.desc} value={d.desc}>{d.desc}</option>
                     )
                     }
                 </select>
 
                 <h5 style={{ display: "inline-block" }} className="ms-2">
-                    {pokeHelper.GetGenNameDesc(sortedAppGen)}
+                    {pokeHelper.GetGenNameDesc(sortedTargetGen)}
                 </h5>
 
-                <br />
+                <span className="nav-menu">
+                    <ReactLink activeClassName={"currently-viewing"} to={`/${targetGlobalConfigGenDataObj.routeId}`} exact={true}>List view</ReactLink>{' '}|{' '}
+                    <ReactLink activeClassName={"currently-viewing"} to={`/waterfall/${targetGlobalConfigGenDataObj.routeId}`}>Waterfall gallery</ReactLink>
+                </span>
+                </div>
+
                 <button onClick={shuffleHandler}>Shuffle</button>
                 &nbsp;
-                <input type="text" value={stateSearchKey} placeholder="Search by Eng name"
-                    onChange={(e) => setStateSearchKey(e.target.value)} />
+                <input type="text" value={appSearchKey} placeholder="Search by Eng name"
+                    onChange={(e) => appSetSearchKey(e.target.value)} />
                 &nbsp; &nbsp;
                 {/* pending due to waterfall
                 <label style={{cursor:"pointer"}}>

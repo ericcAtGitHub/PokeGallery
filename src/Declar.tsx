@@ -38,6 +38,11 @@ const Declar: FC = () => {
                                 React Image Gallery
                             </a>
                         </li>
+                        <li>
+                            <a target="_blank" rel="noreferrer" href="https://react-spring.io/">
+                                react-spring
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <p>Developed by Chan Ching Yin.<span style={{ float: 'right' }}>

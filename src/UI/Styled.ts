@@ -23,11 +23,11 @@ const type: any = {
   water: 'rgb(100,198,247)'
 }
 
-type TStyledGallaryUICardProps = {
+type TStyledGalleryUICardProps = {
     pokeColor: string
 }
 
-export const StyledGallaryUICard = styled.div<TStyledGallaryUICardProps>`
+export const StyledGalleryUICard = styled.div<TStyledGalleryUICardProps>`
   position: relative;
   
   ${({ pokeColor }) => `

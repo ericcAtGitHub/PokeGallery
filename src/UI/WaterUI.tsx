@@ -1,47 +1,60 @@
-import { FC, useContext, useEffect, useState, Suspense } from 'react';
+import useSWR from 'swr'
+import { FC, ChangeEvent, useContext, useEffect, useState, Suspense } from 'react'
+import { animated } from "react-spring"
 
 import { ProGallery } from 'pro-gallery'
-import 'pro-gallery/dist/statics/main.css';
-import ReactImageGallery, { ReactImageGalleryItem } from 'react-image-gallery';
-import "react-image-gallery/styles/css/image-gallery.css";
+import 'pro-gallery/dist/statics/main.css'
+import ReactImageGallery, { ReactImageGalleryItem } from 'react-image-gallery'
+import "react-image-gallery/styles/css/image-gallery.css"
 import * as ModelDef from '../Model/Model'
 import Helper, { PokeHelper } from '../Model/Helper'
+import { GalleryContext } from "../Context/GalleryContext"
+import WaterUIback from './WaterUIback'
+import useImgRepo from '../Hook/useImgRepo'
+import useAnim from '../Hook/useAnim'
+import OptionRollUI from '../UI/OptionRollUI'
 
-import { GalleryContext } from "../Context/GalleryContext";
-import WaterUIback from './WaterUIback';
-import useSWR from 'swr';
 
-const target_poke_desc_loading = "loading..."
+const TARGET_POKE_DESC_LOADING = "loading..."
 
 const WaterUI: FC = () => {
 
     const {
-        appIsShowHandler,
+        appIsShowSpecialHandler,
     } = useContext(GalleryContext)
+
+    const globalConfig = Helper.GetGlobalConfig()
+    const pokeHelper = PokeHelper()
 
     const [stateIsShowReactImgGal, setStateIsShowReactImgGal] = useState<boolean>(false)
     const [stateReactImgGalIndex, setStateReactImgGalIndex] = useState<number>(0)
     const [stateToBeTargetPokeId, setStateToBeTargetPokeId] = useState<number>(-1)
-    const [stateTargetPoke, setStateTargetPoke] = useState<ModelDef.TPokemonSpecies|null>(null)
+    const [stateTargetPoke, setStateTargetPoke] = useState<ModelDef.TPokemonSpecies | null>(null)
+
+    const [appImgRepo, appSetImgRepo] = useImgRepo()
 
     const {
-        appProceededData,
+        appDisplayGalleryItems,
     } = useContext(GalleryContext)
 
-    const pokeHelper = PokeHelper()
+    const styleChangeHandler = (newOptValue: string) => {
+        const targetImgRepo = globalConfig.Gallery.ImgRepo.find(ir => ir.optValue === newOptValue)
+        appSetImgRepo(targetImgRepo!!)
+    }
 
-    const proGalItems = appProceededData.map((apiRes: ModelDef.TNamedAPIResource) => {
+    const proGalItems = appDisplayGalleryItems.map((apiRes: ModelDef.TNamedAPIResource) => {
 
         const pokeId = pokeHelper.GetPokeIdFromPokeSpecApiRes(apiRes)
-        //console.log(pokemonId)
-            return {
-                itemId: pokeId + "",
-                url: `sprites/pokemon/other/dream-world/${pokeId}.svg`,
-                metadata: {
-                    type: "image",
-                    alt: ' '
-                }
+
+        return {
+            itemId: pokeId + "",
+            mediaUrl: `${appImgRepo.basePath}${pokeId}.${appImgRepo.ext}`, // without this the change style func does not work...
+            url: `${appImgRepo.basePath}${pokeId}.${appImgRepo.ext}`,
+            metadata: {
+                type: "image",
+                alt: ' '
             }
+        }
     })
 
     const reactImgGalItems = proGalItems.map((proItem: any) => ({
@@ -70,7 +83,6 @@ const WaterUI: FC = () => {
 
         switch (eventName) {
             case 'ITEM_ACTION_TRIGGERED':
-                //console.log(eventData)
                 if (eventData.type === 'image') {
 
                     setStateReactImgGalIndex(eventData.idx)
@@ -83,7 +95,7 @@ const WaterUI: FC = () => {
         }
     }
 
-    const setDisplayHandler = (pokeSpec: ModelDef.TPokemonSpecies) => {
+    const displayPokeDetailHandler = (pokeSpec: ModelDef.TPokemonSpecies) => {
         setStateTargetPoke(pokeSpec)
     }
 
@@ -91,7 +103,15 @@ const WaterUI: FC = () => {
         <>
             <link rel="stylesheet" type="text/css" href={`${process.env.PUBLIC_URL}/pageCss/water-ui.css`} />
 
-            {appProceededData.length !== 0 &&
+            <OptionRollUI
+                Desc={"Style: "}
+                OptionLabels={globalConfig.Gallery.ImgRepo.map(ir => ir.desc)}
+                OptionValues={globalConfig.Gallery.ImgRepo.map(ir => ir.optValue)}
+                InitSelectedInd={globalConfig.Gallery.ImgRepo.findIndex(ir => ir.optValue === appImgRepo.optValue)}
+                OptionChangeHandler={(newOptValue) => styleChangeHandler(newOptValue)} />
+            <br /><br />
+
+            {appDisplayGalleryItems.length !== 0 &&
                 <ProGallery items={proGalItems} container={proGalContainer}
                     options={proGalOptions} eventsListener={proGalEventsListener} />
             }
@@ -118,22 +138,21 @@ const WaterUI: FC = () => {
             }
 
             <Suspense fallback={null}>
-            {appProceededData.map((apiRes: ModelDef.TNamedAPIResource) =>
+            {appDisplayGalleryItems.map((apiRes: ModelDef.TNamedAPIResource) =>
                     <WaterUIback key={"WaterUIback1" + apiRes.name} pokeSpecApiRes={apiRes}
                         appIsTargetNow={pokeHelper.GetPokeIdFromPokeSpecApiRes(apiRes) === (stateToBeTargetPokeId)}
-                        appSetDisplayHandler={setDisplayHandler} />
+                        appDisplayPokeDetailHandler={displayPokeDetailHandler} />
                 )}
             </Suspense>
 
             {
                 stateIsShowReactImgGal &&
                 <div className="target-poke-desc">
-                    <h1 className="target-poke-desc-top-left">{stateTargetPoke != null ? "#" + stateTargetPoke.id : target_poke_desc_loading}</h1>
-                    <h1 className="target-poke-desc-bottom-center">{stateTargetPoke != null ? pokeHelper.GetNameDesc(stateTargetPoke) : target_poke_desc_loading}</h1>
+                    <h1 className="target-poke-desc-top-left">{stateTargetPoke != null ? "#" + stateTargetPoke.id : TARGET_POKE_DESC_LOADING}</h1>
+                    <h1 className="target-poke-desc-bottom-center">{stateTargetPoke != null ? pokeHelper.GetNameDesc(stateTargetPoke) : TARGET_POKE_DESC_LOADING}</h1>
                 </div>
             }
-
         </>)
-};
+}
 
-export default WaterUI;
+export default WaterUI

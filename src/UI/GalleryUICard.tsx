@@ -7,7 +7,7 @@ import useSWR from 'swr'
 import * as ModelDef from '../Model/Model'
 import Helper, { PokeHelper } from '../Model/Helper'
 import { GalleryContext } from "../Context/GalleryContext"
-import { StyledGallaryUICard, StyledPokeType } from './Styled'
+import { StyledGalleryUICard, StyledPokeType } from './Styled'
 
 type Props = {
     pokeSpecApiRes: ModelDef.TNamedAPIResource
@@ -20,7 +20,7 @@ const genTFindicator = (tf: boolean) => (tf ? "Yes" : "--" )
 const GalleryUICard: FC<Props> = ({ pokeSpecApiRes }) => {
 
     const {
-        appIsShowHandler,
+        appIsShowSpecialHandler,
     } = useContext(GalleryContext)
 
     const { data: dataPoke, error: errorPoke } = useSWR(urlPoke(pokeSpecApiRes))
@@ -46,8 +46,8 @@ const GalleryUICard: FC<Props> = ({ pokeSpecApiRes }) => {
 
     const pokemonTypes = poke.types.map((pokemonType: any) => pokemonType.type.name)
 
-    return (appIsShowHandler(pokeSpec) &&
-        <StyledGallaryUICard pokeColor={pokeSpec.color.name} className="border-bottom">
+    return (appIsShowSpecialHandler(pokeSpec) &&
+        <StyledGalleryUICard pokeColor={pokeSpec.color.name} className="border-bottom">
             <h2>#{pokeSpec.id} {pokeHelper.GetNameDesc(pokeSpec)}</h2>
             <div className="container">
                 <div className="row">
@@ -116,7 +116,7 @@ const GalleryUICard: FC<Props> = ({ pokeSpecApiRes }) => {
                     </div>
                 </div>
             </div>
-        </StyledGallaryUICard>
+        </StyledGalleryUICard>
     )
 }
 

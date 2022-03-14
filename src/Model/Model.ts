@@ -1,4 +1,6 @@
-﻿export type TGeneration = {
+/***** Type definition based on PokeApi ******/
+
+export type TGeneration = {
 	id: number, // The identifier for this resource.
 	name: string, // The name for this resource.
 	abilities: any[], //A list of abilities that were introduced in this generation. list NamedAPIResource(Ability)
@@ -113,18 +115,33 @@ export type TGenus = {
 	language: TNamedAPIResource //The language this genus is in. NamedAPIResource(Language)
 }
 
+/****** Cust Type Def ******/
+
+export enum EViewPage {
+	Default,
+	Water
+}
+
 export type TGlobalConfig = {
-	Gallary: TConfigGallary,
+	Gallery: TConfigGallery,
 	//DeclarHeight: number
 }
 
-type TConfigGallary = {
-	Data: TConfigGallaryData[]
+type TConfigGallery = {
+	GenData: TConfigGenData[],
+	ImgRepo: TConfigImgRepo[]
 }
 
-export type TConfigGallaryData = {
+export type TConfigGenData = {
 	obj: any
 	desc: string
 	routeId: string
+}
+
+export type TConfigImgRepo = {
+	basePath: string
+	ext: string
+	desc: string
+	optValue: string
 }
 

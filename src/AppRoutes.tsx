@@ -6,8 +6,7 @@ import { IMyRouteMatchParams } from './Context/GalleryContext'
 
 // Components
 import App from './App'
-import GalleryContainer from './Container/GalleryContainer'
-import WaterContainer from './Container/WaterContainer'
+import DisplayContainer from './Container/DisplayContainer'
 
 const AppRoutes = () => {
 
@@ -17,8 +16,8 @@ const AppRoutes = () => {
         <App>
             <ReactHashRouter>
                 <ReactSwitch>
-                    <ReactRoute path="/waterfall/:routeId?" component={(routeProps: RouteComponentProps<IMyRouteMatchParams>) => <WaterContainer />} exact />
-                    <ReactRoute path="/:routeId?" component={(routeProps: RouteComponentProps<IMyRouteMatchParams>) => <GalleryContainer/>} exact />
+                    <ReactRoute path="/waterfall/:routeId?" component={(routeProps: RouteComponentProps<IMyRouteMatchParams>) => DisplayContainer(ModelDef.EViewPage.Water)} exact />
+                    <ReactRoute path="/:routeId?" component={(routeProps: RouteComponentProps<IMyRouteMatchParams>) => DisplayContainer(ModelDef.EViewPage.Default)} exact />
                 </ReactSwitch>
             </ReactHashRouter>
         </App>
