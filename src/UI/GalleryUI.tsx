@@ -1,8 +1,6 @@
 import { FC, useContext, useState, useRef, useEffect, Suspense, lazy } from 'react'
-import { animated } from "react-spring"
 //import { RouteComponentProps } from 'react-router'
 
-import useAnim from '../Hook/useAnim'
 import Helper from '../Model/Helper'
 import * as ModelDef from '../Model/Model'
 import { GalleryContext } from "../Context/GalleryContext"

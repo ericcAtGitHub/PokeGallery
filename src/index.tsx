@@ -8,6 +8,10 @@ import AppRoutes from './AppRoutes'
 
 ReactDOM.render(
     <React.StrictMode>
+        <link rel="stylesheet" type="text/css" href={`${process.env.PUBLIC_URL}/pageCss/app-routes.css`} />
+        <link rel="stylesheet" type="text/css" href={`${process.env.PUBLIC_URL}/pageCss/gallery-context.css`} />
+        <link rel="stylesheet" type="text/css" href={`${process.env.PUBLIC_URL}/pageCss/water-ui.css`} />
+
         <Declar/>
         <ReactBrowserRouter>
             <AppRoutes />

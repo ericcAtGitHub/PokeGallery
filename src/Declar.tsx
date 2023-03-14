@@ -8,10 +8,15 @@ const Declar: FC = () => {
         <div className="row">
             <div className="mx-auto w-50">
                 <div style={{fontSize: 15}}>
-                    This React app is about Pokémon. It is adapted from ch.6
-                    of <a target="_blank" rel="noreferrer" href="https://github.com/PacktPublishing/React-17-Design-Patterns-and-Best-Practices-Third-Edition">
+                    This React app is about Pokémon. It was inspired by the examples in{' '}
+                    <a target="_blank" rel="noreferrer" href="https://github.com/PacktPublishing/React-17-Design-Patterns-and-Best-Practices-Third-Edition">
                         this book
-                    </a> and built from:
+                    </a>
+                    {' '}and{' '}
+                    <a target="_blank" rel="noreferrer" href="https://github.com/dogriffiths/ReactCookbook-source/tree/master/ch02-05-transitions">
+                        this
+                    </a>
+                    . The app is built from:
                     <ul>
                         <li>
                             <a target="_blank" rel="noreferrer" href="https://pokeapi.co/">
@@ -39,8 +44,8 @@ const Declar: FC = () => {
                             </a>
                         </li>
                         <li>
-                            <a target="_blank" rel="noreferrer" href="https://react-spring.io/">
-                                react-spring
+                            <a target="_blank" rel="noreferrer" href="https://reactcommunity.org/react-transition-group/">
+                                React Transition Group
                             </a>
                         </li>
                     </ul>

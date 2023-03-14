@@ -1,6 +1,5 @@
 import useSWR from 'swr'
 import { FC, ChangeEvent, useContext, useEffect, useState, Suspense } from 'react'
-import { animated } from "react-spring"
 
 import { ProGallery } from 'pro-gallery'
 import 'pro-gallery/dist/statics/main.css'
@@ -11,7 +10,6 @@ import Helper, { PokeHelper } from '../Model/Helper'
 import { GalleryContext } from "../Context/GalleryContext"
 import WaterUIback from './WaterUIback'
 import useImgRepo from '../Hook/useImgRepo'
-import useAnim from '../Hook/useAnim'
 import OptionRollUI from '../UI/OptionRollUI'
 
 
@@ -101,8 +99,6 @@ const WaterUI: FC = () => {
 
     return (
         <>
-            <link rel="stylesheet" type="text/css" href={`${process.env.PUBLIC_URL}/pageCss/water-ui.css`} />
-
             <OptionRollUI
                 Desc={"Style: "}
                 OptionLabels={globalConfig.Gallery.ImgRepo.map(ir => ir.desc)}

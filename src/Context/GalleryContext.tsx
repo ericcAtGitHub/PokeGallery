@@ -38,15 +38,15 @@ const scrollBtnCssClassHide = "scroll-top scroll-top-hide"
 const scrollBtnCssClassShow = "scroll-top scroll-top-show"
 
 const GalleryContextHOC: FC<IGalleryContextHOC> = ({ children, ...routeParams }): ReactElement => {
-    
+
     const globalConfig = Helper.GetGlobalConfig() // get the content of the file "public/GlobalConfig.cs"
     const pokeHelper = PokeHelper()
     //console.log(routeParams.match.params.routeId)
 
     const getGlobalConfigGenDataObj
         = (criteriaChecker: (g: ModelDef.TConfigGenData) => boolean): ModelDef.TConfigGenData => {
-        return globalConfig.Gallery.GenData.find(g => criteriaChecker(g)) || globalConfig.Gallery.GenData[0]
-    }
+            return globalConfig.Gallery.GenData.find(g => criteriaChecker(g)) || globalConfig.Gallery.GenData[0]
+        }
 
     const targetGlobalConfigGenDataObj: ModelDef.TConfigGenData
         = getGlobalConfigGenDataObj(g => g.routeId === routeParams.match.params.routeId)
@@ -112,33 +112,29 @@ const GalleryContextHOC: FC<IGalleryContextHOC> = ({ children, ...routeParams })
         appDisplayGalleryItems: toBeDisplayedGalleryItems,
         appIsShowSpecialHandler: isShowSpecialHandler,
         appRouteCtx: routeParams
-	}
+    }
 
     return (
-        <>
-            <link rel="stylesheet" type="text/css" href={`${process.env.PUBLIC_URL}/pageCss/gallery-context.css`} />
-
+        <div>
             <div ref={scrollToThisEleRef}>&nbsp;</div>
-
-            
 
             <div>
                 <div>
-                <select onChange={selectTargetGenDataObjHandler} defaultValue={targetGlobalConfigGenDataObj.desc}>
-                    {globalConfig.Gallery.GenData.map(d =>
-                        <option key={d.desc} value={d.desc}>{d.desc}</option>
-                    )
-                    }
-                </select>
+                    <select onChange={selectTargetGenDataObjHandler} defaultValue={targetGlobalConfigGenDataObj.desc}>
+                        {globalConfig.Gallery.GenData.map(d =>
+                            <option key={d.desc} value={d.desc}>{d.desc}</option>
+                        )
+                        }
+                    </select>
 
-                <h5 style={{ display: "inline-block" }} className="ms-2">
-                    {pokeHelper.GetGenNameDesc(sortedTargetGen)}
-                </h5>
+                    <h5 style={{ display: "inline-block" }} className="ms-2">
+                        {pokeHelper.GetGenNameDesc(sortedTargetGen)}
+                    </h5>
 
-                <span className="nav-menu">
-                    <ReactLink activeClassName={"currently-viewing"} to={`/${targetGlobalConfigGenDataObj.routeId}`} exact={true}>List view</ReactLink>{' '}|{' '}
-                    <ReactLink activeClassName={"currently-viewing"} to={`/waterfall/${targetGlobalConfigGenDataObj.routeId}`}>Waterfall gallery</ReactLink>
-                </span>
+                    <span className="nav-menu">
+                        <ReactLink activeClassName={"currently-viewing"} to={`/${targetGlobalConfigGenDataObj.routeId}`} exact={true}>List view</ReactLink>{' '}|{' '}
+                        <ReactLink activeClassName={"currently-viewing"} to={`/waterfall/${targetGlobalConfigGenDataObj.routeId}`}>Waterfall gallery</ReactLink>
+                    </span>
                 </div>
 
                 <button onClick={shuffleHandler}>Shuffle</button>
@@ -153,7 +149,7 @@ const GalleryContextHOC: FC<IGalleryContextHOC> = ({ children, ...routeParams })
                 </label>
                 */}
             </div>
-            <br/>
+            <br />
 
             <GalleryContext.Provider value={contextValues}>
                 {children}
@@ -163,12 +159,10 @@ const GalleryContextHOC: FC<IGalleryContextHOC> = ({ children, ...routeParams })
                 //window.scrollTo({ top: Helper.GetGlobalConfig().DeclarHeight, behavior: 'smooth' })
                 let ele = scrollToThisEleRef.current as unknown as HTMLElement
                 ele.scrollIntoView();
-            }}
-                
-            >
-                Top
+            }}>
+                {'Top'}
             </button>
-        </>)
+        </div>)
 };
 
 export default withRouter(GalleryContextHOC)
