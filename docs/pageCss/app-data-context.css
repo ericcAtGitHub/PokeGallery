@@ -1,0 +1,53 @@
+.my-nav-menu {
+    /*position: absolute;
+    right: 10px;*/
+    float: right;
+}
+
+    .my-nav-menu a.my-currently-viewing {
+        pointer-events: none;
+        cursor: default;
+        color: aliceblue;
+        text-decoration: none;
+    }
+
+.my-scroll-top {
+    cursor: pointer;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border: none;
+    outline: none;
+    background-color: rgba(28, 96, 72, 0.8);
+    color: white;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 12px 22px 16px 22px;
+    border-radius: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    font-size: large;
+}
+
+    .my-scroll-top:hover {
+        background-color: rgb(32, 142, 93);
+    }
+
+.my-scroll-top-hide {
+    display: none;
+}
+
+.my-scroll-top-show {
+    display: block;
+    animation: my-scrollcome 0.5s linear 0s 1 normal;
+}
+
+@keyframes my-scrollcome {
+    from {
+        position: fixed;
+        right: -50px;
+    }
+
+    to {
+        position: fixed;
+        right: 20px;
+    }
+}

@@ -1,15 +1,18 @@
-import React, { FC } from 'react'
+import { ReactElement } from 'react'
 import { SWRConfig } from 'swr'
 
-import Helper from './Model/Helper'
-import UserInputContextHOC from './Context/UserInputContext'
+import * as AppContext from './Context/_AppContext'
+import { DH } from './Infra/Helper/_Helper'
+import AppRoutes from './AppRoutes'
 
-const App: FC = ({ children }) => {
+const App = () => {
+
     return (
-        <UserInputContextHOC>
+        <AppContext.UserInput.HOC>
             <SWRConfig value={{
-                fetcher: Helper.Fetcher, suspense: true,
-                revalidateOnFocus: false, //all options below is to use useSWR to fetch only one time
+                fetcher: DH.getFetcher,
+                suspense: true,
+                revalidateOnFocus: false, //all options below is to let useSWR fetch only one time
                 revalidateOnMount: false,
                 revalidateOnReconnect: false,
                 refreshWhenOffline: false,
@@ -17,10 +20,10 @@ const App: FC = ({ children }) => {
                 refreshInterval: 0
             }}>
                 <div className="App">
-                    {children}
+                    <AppRoutes />
                 </div>
             </SWRConfig>
-        </UserInputContextHOC>
+        </AppContext.UserInput.HOC>
     )
 }
 

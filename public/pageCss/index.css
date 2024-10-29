@@ -1,0 +1,42 @@
+a {
+    color: burlywood
+}
+
+a:hover {
+    color: aliceblue;
+}
+
+img {
+    max-width: 100%;
+    max-height: 800px;
+}
+
+h5 {
+    color: #ffffff;
+}
+
+p {
+    color: #eeeeee;
+}
+
+div {
+    color: #eeeeee;
+}
+
+ol, ul {
+    padding-left: 30px;
+}
+
+.hide-block {
+    display: none;
+}
+
+.hide-mouse {
+    cursor: none;
+}
+
+body {
+    font: 15px "Century Gothic", Futura, sans-serif;
+    margin: 20px;
+    background: #444444;
+}

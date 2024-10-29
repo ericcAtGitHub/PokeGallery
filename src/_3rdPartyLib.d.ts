@@ -1,1 +1,1 @@
-declare module 'pro-gallery'
+//declare module 'pro-gallery'

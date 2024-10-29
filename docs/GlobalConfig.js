@@ -1,10 +1,10 @@
 window.GlobalConfig = {
     Gallery: {
-        GenData: [
-            { obj: window.GenTest, desc: "Test", routeId: "" },
-            { obj: window.Gen1, desc: "Generation 1", routeId: "gen1" },
-            { obj: window.Gen2, desc: "Generation 2", routeId: "gen2" },
-            { obj: window.Gen3, desc: "Generation 3", routeId: "gen3" },
+        GnData: [
+            { obj: window.GnTest, desc: "Test", routeId: "" },
+            { obj: window.Gn1, desc: "Generation 1", routeId: "gn1" },
+            { obj: window.Gn2, desc: "Generation 2", routeId: "gn2" },
+            { obj: window.Gn3, desc: "Generation 3", routeId: "gn3" },
         ],
         ImgRepo: [
             {

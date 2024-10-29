@@ -1,0 +1,51 @@
+.pro-gallery img {
+    cursor: pointer;
+}
+
+/*
+.my-react-image-gallery-c2 {
+    background-image: url('../sprites/items/dream-world/poke-ball.png');
+    background-size: clamp(10px, 30vw, 600px) auto;
+    background-repeat: no-repeat;
+    background-position: center center;
+}*/
+
+.my-react-image-gallery-c2 {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.my-react-image-gallery-c1 {
+    position: relative;
+}
+
+.my-react-image-gallery-c1 img.image-gallery-image {
+    width: 80%;
+    height: 100vh;
+}
+
+.my-target-poke-desc h1 {
+    position: fixed;
+    z-index: 1001;
+}
+
+.my-target-poke-desc-top-left {
+    top: 10px;
+    left: 40px;
+    font-size: 4vw;
+}
+
+.my-target-poke-desc-bottom-center {
+    bottom: 15px;
+    width: 100%;
+    text-align: center;
+    font-size: 4vw;
+    word-spacing: 20px;
+}

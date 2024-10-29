@@ -1,27 +1,35 @@
-import { FC, useContext, useEffect, useState } from 'react'
-import { SWRConfig } from 'swr'
-
-import * as ModelDef from '../Model/Model'
-import Helper from '../Model/Helper'
-import GalleryContextHOC, { IGalleryContextHOC } from "../Context/GalleryContext"
-import GalleryUI from '../UI/GalleryUI'
-import WaterUI from '../UI/WaterUI'
+import * as ModelDef from '../Infra/ModelDef'
+import * as AppContext from '../Context/_AppContext'
+import * as Gallery from '../Component/GalleryCom'
+import * as Waterfall from '../Component/WaterfallCom'
+import * as Declar from '../Component/DeclarCom'
+import * as Header from '../Component/HeaderCom'
 
 const getContent = (eViewPage: ModelDef.EViewPage) => {
     switch (eViewPage) {
         case ModelDef.EViewPage.Water:
-            return (<WaterUI />)
+            return (<Waterfall.UI />)
         default:
-            return (<GalleryUI />)
+            return (<Gallery.UI />)
     }
 }
 
-const DisplayContainer = (enumViewPage: ModelDef.EViewPage) => {
+type TProps = {
+    enumViewPage: ModelDef.EViewPage
+}
+
+const DisplayContainer = ({ enumViewPage }: TProps) => {
 
     return (
-        <GalleryContextHOC>
-            {getContent(enumViewPage)}
-        </GalleryContextHOC>
+        <>
+            <Header.UI/>
+
+            <AppContext.Data.HOC>
+                {getContent(enumViewPage)}
+            </AppContext.Data.HOC>
+
+            <Declar.UI />
+        </>
     )
 };
 
