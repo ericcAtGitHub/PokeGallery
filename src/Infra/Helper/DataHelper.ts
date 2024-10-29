@@ -1,6 +1,7 @@
 import * as ModelDef from '../../Infra/ModelDef'
 import * as ApiUrl from '../../Infra/Const/ApiUrl'
 import * as RouteUrl from '../../Infra/Const/RouteUrl'
+import { Route } from 'react-router-dom'
 
 /**
  * Get the content of the file "public/GlobalConfig.cs"
@@ -60,6 +61,6 @@ export const getSpritePokeBallSrc = () => {
 
 export const getImgUrl = (imgRepo: ModelDef.TConfigImgRepo, pokeSpecApiRes: ModelDef.TNamedAPIResource) => {
     const pokeId = getPokeIdBySpecApiRes(pokeSpecApiRes)
-    return `/${imgRepo.basePath}${pokeId}.${imgRepo.ext}`
+    return `${RouteUrl.base_url}${imgRepo.basePath}${pokeId}.${imgRepo.ext}`
 }
 

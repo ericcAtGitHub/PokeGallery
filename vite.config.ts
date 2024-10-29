@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import pkgJSON from "./package.json" 
 
+const _base = '/PokeGallery/'
+
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [react()],
@@ -19,5 +21,5 @@ export default defineConfig({
         outDir: 'docs' // fitting GitHub's structure
     },
 
-    base: './' // fitting GitHub's structure
+    base: _base // fitting GitHub's structure
 })

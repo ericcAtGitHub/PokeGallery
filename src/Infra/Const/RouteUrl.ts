@@ -5,6 +5,8 @@ type TMyRouteMatchParams = {
     routeId: string
 }
 
-export const sprites_pokemon = `sprites/pokemon/`
+export const base_url = import.meta.env.BASE_URL
 
-export const sprites_poke_ball = `sprites/items/dream-world/poke-ball.png`
+export const sprites_pokemon = `${base_url}sprites/pokemon/`
+
+export const sprites_poke_ball = `${base_url}sprites/items/dream-world/poke-ball.png`
