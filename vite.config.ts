@@ -16,6 +16,8 @@ export default defineConfig({
     },
 
     build: {
-        outDir: 'docs' // for matching GitHub's rule
-    }
+        outDir: 'docs' // fitting GitHub's structure
+    },
+
+    base: './' // fitting GitHub's structure
 })
